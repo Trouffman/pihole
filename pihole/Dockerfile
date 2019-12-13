@@ -27,6 +27,12 @@ RUN sed -i '/$AUTHORIZED_HOSTNAMES = array(/ a "balena-devices.com",' /var/www/h
 # otherwise dnsmasq will fail to start since balena is using 53 on some interfaces
 RUN echo "bind-interfaces" >> /etc/dnsmasq.conf
 
+# Force DHCP to be ON at first boot (might cause conflict with other router / DHCP server)
+# RUN echo "# File generated at Container Creation and NOT by the web interface (like it should usually)"  >> 02-pihole-dhcp.conf
+# Copy the config to activate DHCP at container creation
+COPY conf/ /etc/dnsmasq.d/
+
+
 RUN curl -fsSL https://github.com/jpmck/PADD/archive/v3.0.2.tar.gz | tar xz --strip-components 1 \
 	&& chmod +x padd.sh
 
